@@ -8,6 +8,8 @@
 	</head>
 	<body><div id="cajaFormulario">
 			<form>
+
+
 				<p><h2>Id o Url:</h2>
 				<input type="text" id="idLista" placeholder="introduce el id o url de la lista de reproduccion." size="50"></p>
 
@@ -16,19 +18,21 @@
 				<h2><a href="#" id="configuracion">¿Deseas configurar la informacion a ser mostrada?</a></h2>
 				
 				<div id="cajaConfiguracion">
+
+				 <a class='cerrar' href='#' onclick='document.getElementById(&apos;cajaConfiguracion&apos;).className = &apos;oculto&apos;'>x</a>
 					<h3>Informacion General</h3>
 
 					<p><label for="videosPagina">Numero de videos por pagina</label>
-					<input type="number" id="videosPagina" min="1" max="50" value="1"></p>
+					<input type="number" id="videosPagina" min="1" max="50" value="15"></p>
 
 					<p><label for="cantidadVideos">Cantidad de Videos</label>
-					<input type="checkbox" id="cantidadVideos"></p>
+					<input type="checkbox" id="cantidadVideos" checked="true"></p>
 
 					<p><label for="duracionTotal">Duracion total</label>
-					<input type="checkbox" id="duracionTotal"></p>
+					<input type="checkbox" id="duracionTotal" checked="true"></p>
 
 					<p><label for="tituloCanal">Titulo del Canal</label>
-					<input type="checkbox" id="tituloCanal"></p>
+					<input type="checkbox" id="tituloCanal" checked="true"></p>
 
 					<p><label for="descripcionCanal">Descripcion del Canal</label>
 					<input type="checkbox" id="descripcionCanal"></p>
@@ -38,19 +42,19 @@
 
 					<h3>Informacion de los videos.</h3>
 					<p><label for="videoTitulo">Titulo del Video</label>
-					<input type="checkbox" id="videoTitulo"></p>
+					<input type="checkbox" id="videoTitulo" checked="true"></p>
 
 					<p><label for="descripcionVideo">Descripción del Video</label>
 					<input type="checkbox" id="descripcionVideo"></p> 
 
 					<p><label for="thumbnailsVideo">Thumbnails del Video</label>
-					<input type="checkbox" id="thumbnailsVideo"></p>
+					<input type="checkbox" id="thumbnailsVideo" checked="true"></p>
 					
 					<p><label for="duracionVideo">Duración del Video</label>
-					<input type="checkbox" id="duracionVideo"></p>
+					<input type="checkbox" id="duracionVideo" checked="true"></p>
 
 					<p><label for="fechaPublicacion">Fecha de Publicación</label>
-					<input type="checkbox" id="fechaPublicacion"></p>
+					<input type="checkbox" id="fechaPublicacion" checked="true"></p>
 
 					<p><label for="calidadVideo">Calidad del Video</label>
 					<input type="checkbox" id="calidadVideo"></p>
