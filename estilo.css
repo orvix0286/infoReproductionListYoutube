@@ -1,11 +1,22 @@
-label{
+#cajaFormulario{
+	margin: auto;
+	text-align: center;
+	width: 500px;
+}
+
+p{
 	background: none repeat scroll 0 0 #f3f3f3;
+	height: 34px;
+}
+
+label{
+	text-align: left;
+	
 	float: left;
 	font-size: 16px;
 	font-weight: bold;
-	height: 24px;
 	margin: 0 10px 0 0;
-	padding: 3px 7px;
+	padding: 7px 7px;
 	width: 200px;
 }
 
@@ -14,5 +25,9 @@ input{
 	border: 1px solid #cccccc;
 	height: 16px;
 	padding: 7px;
+}
+
+label[name="idLista"]{
+	display: block;
 }
 
