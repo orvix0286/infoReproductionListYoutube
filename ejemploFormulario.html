@@ -1,73 +1,85 @@
 <!DOCTYPE html>
 <html lang="es">
 	<head>
+		<meta charset="UTF-8">
 		<title>Ejemplo Formulario</title>
 		<link rel="stylesheet" href="estilo.css">
-		<meta charset="UTF-8">
+		<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+		<script src="ventanamodal.js"></script>
 	</head>
 	<body><div id="cajaFormulario">
 		<form>
 			<p><h2>Id o Url:</h2>
-			<input type="text" id="idLista" placeholder="introduce el id o url de la lista de reproduccion." size="50"></p>
+			<input type="text" id="idLista" placeholder="introduce el id o url de la lista de reproduccion." size="50">
+			<span class="dame">Dame</span>
+			</p>
 			
-			<h2>Selecciona la informacion a ser mostrada.</h2>
-			<h3>Informacion General</h3>
+			<span class="config">
+				<img src="img/configuracion.png" width="45">
+			</span>
 
-			<p><label for="videosPagina">Numero de videos por pagina</label>
-			<input type="number" id="videosPagina" size="2" min="1" max="50" value="1"></p>
+			<div class="overlay-container">
+				<div class="window-container zoomout">
+					<h3>Informacion General</h3>
 
-			<p><label for="cantidadVideos">Cantidad de Videos</label>
-			<input type="checkbox" id="cantidadVideos"></p>
+					<p><label for="videosPagina">Numero de videos por pagina</label>
+					<input type="number" id="videosPagina" size="2" min="1" max="50" value="1"></p>
 
-			<p><label for="duracionTotal">Duracion total</label>
-			<input type="checkbox" id="duracionTotal"></p>
+					<p><label for="cantidadVideos">Cantidad de Videos</label>
+					<input type="checkbox" id="cantidadVideos"></p>
 
-			<p><label for="tituloCanal">Titulo del Canal</label>
-			<input type="checkbox" id="tituloCanal"></p>
+					<p><label for="duracionTotal">Duracion total</label>
+					<input type="checkbox" id="duracionTotal"></p>
 
-			<p><label for="descripcionCanal">Descripcion del Canal</label>
-			<input type="checkbox" id="descripcionCanal"></p>
+					<p><label for="tituloCanal">Titulo del Canal</label>
+					<input type="checkbox" id="tituloCanal"></p>
 
-			<p><label for="tumbnailsCanal">Thumbnails del Canal</label>
-			<input type="checkbox" id="thumbnailsCanal"></p>
+					<p><label for="descripcionCanal">Descripcion del Canal</label>
+					<input type="checkbox" id="descripcionCanal"></p>
 
-			<h3>Informacion de los videos.</h3>
-			<p><label for="videoTitulo">Titulo del Video</label>
-			<input type="checkbox" id="videoTitulo"></p>
+					<p><label for="thumbnailsCanal">Thumbnails del Canal</label>
+					<input type="checkbox" id="thumbnailsCanal"></p>
 
-			<p><label for="descripcionVideo">Descripción del Video</label>
-			<input type="checkbox" id="descripcionVideo"></p> 
+					<h3>Informacion de los videos.</h3>
+					<p><label for="videoTitulo">Titulo del Video</label>
+					<input type="checkbox" id="videoTitulo"></p>
 
-			<p><label for="thumbnailsVideo">Thumbnails del Video</label>
-			<input type="checkbox" id="thumbnailsVideo"></p>
-			
-			<p><label for="duracionVideo">Duración del Video</label>
-			<input type="checkbox" id="duracionVideo"></p>
+					<p><label for="descripcionVideo">Descripción del Video</label>
+					<input type="checkbox" id="descripcionVideo"></p> 
 
-			<p><label for="fechaPublicacion">Fecha de Publicación</label>
-			<input type="checkbox" id="fechaPublicacion"></p>
+					<p><label for="thumbnailsVideo">Thumbnails del Video</label>
+					<input type="checkbox" id="thumbnailsVideo"></p>
+					
+					<p><label for="duracionVideo">Duración del Video</label>
+					<input type="checkbox" id="duracionVideo"></p>
 
-			<p><label for="calidadVideo">Calidad del Video</label>
-			<input type="checkbox" id="calidadVideo"></p>
+					<p><label for="fechaPublicacion">Fecha de Publicación</label>
+					<input type="checkbox" id="fechaPublicacion"></p>
 
-			<p><label for="estadisticas">Estadisticas</label>
-			<input type="checkbox" id="estadisticas"></p>
-			
-			<p><label for="cantidadVisualizaciones">Cantidad de Visualizaciones</label>
-			<input type="checkbox" id="cantidadVisualizaciones"></p>
+					<p><label for="calidadVideo">Calidad del Video</label>
+					<input type="checkbox" id="calidadVideo"></p>
 
-			<p><label for="cantidadMeGusta">Cantidad de Me gusta</label>
-			<input type="checkbox" id="cantidadMeGusta"></p>
+					<p><label for="estadisticas">Estadisticas</label>
+					<input type="checkbox" id="estadisticas"></p>
+					
+					<p><label for="cantidadVisualizaciones">Cantidad de Visualizaciones</label>
+					<input type="checkbox" id="cantidadVisualizaciones"></p>
 
-			<p><label for="cantidadNoMeGusta">Cantidad de No me Gusta</label>
-			<input type="checkbox" id="cantidadNoMeGusta"></p>
+					<p><label for="cantidadMeGusta">Cantidad de Me gusta</label>
+					<input type="checkbox" id="cantidadMeGusta"></p>
 
-			<p><label for="cantidadComentarios">Cantidad de Comentarios</label>
-			<input type="checkbox" id="cantidadComentarios"></p>
+					<p><label for="cantidadNoMeGusta">Cantidad de No me Gusta</label>
+					<input type="checkbox" id="cantidadNoMeGusta"></p>
 
-			<p><label for="cantidadFavoritos">Cantidad de Favoritos</label>
-			<input type="checkbox" id="cantidadFavoritos"></p>
-			
+					<p><label for="cantidadComentarios">Cantidad de Comentarios</label>
+					<input type="checkbox" id="cantidadComentarios"></p>
+
+					<p><label for="cantidadFavoritos">Cantidad de Favoritos</label>
+					<input type="checkbox" id="cantidadFavoritos"></p>
+
+					<span class="close">Cerrar</span>
+				</div>
+			</div>			
 		</form>
 		</div>
 	</body>
