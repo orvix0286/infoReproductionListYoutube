@@ -1,3 +1,11 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700&subset=latin,latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext);
+@import url(https://fonts.googleapis.com/css?family=Wire+One);
+
+body{
+	font-family: 'Open Sans Condensed', sans-serif;
+}
+
 #cajaFormulario{
 	margin: auto;
 	text-align: center;
@@ -15,7 +23,7 @@ p{
 	width: 100%;
 	position: absolute;
 	left: 0;
-					top: 0;
+	top: 0;
 	background: -moz-radial-gradient(center, ellipse cover, rgba(127,127,127,0) 0%, rgba(127,127,127,0.9) 100%);
 	background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(127,127,127,0)), color-stop(100%,rgba(127,127,127,0.9)));
 	background: -webkit-radial-gradient(center, ellipse cover, rgba(127,127,127,0) 0%,rgba(127,127,127,0.9) 100%);
@@ -31,7 +39,7 @@ p{
 	margin: 1em auto;
 	width: 350px;
 	height: 600px;
-	padding: 10px 20px 20px;
+	padding: 1px 20px 20px;
 	text-align: left;
 	z-index: 3;
 	border-radius: 5px;
@@ -119,10 +127,8 @@ p{
 
 label{
 	text-align: left;
-	
 	float: left;
-	font-size: 16px;
-	font-weight: bold;
+	font-size: 18px;
 	margin: 0 10px 0 0;
 	padding: 7px 7px;
 	width: 200px;
@@ -135,10 +141,31 @@ input{
 	padding: 7px;
 }
 
+input[type="number"]{
+	width: 50px;
+}
+
 label[name="idLista"]{
 	display: block;
 }
 
 h3{
 	text-align: center;
+}
+
+.cerrar{
+	text-align: right;
+	font-size: 40px;
+}
+
+.cerrar span{
+	color: #aaa;
+	font-size: 40px;
+	font-family: 'Wire One', sans-serif;
+}
+
+.cerrar span:hover{
+	color: red;
+	font-size: 40px;
+	cursor: pointer;
 }
