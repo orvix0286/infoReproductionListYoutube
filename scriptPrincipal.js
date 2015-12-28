@@ -29,7 +29,7 @@ $(document).ready(function(){
         part: "snippet,contentDetails",
         playlistId: idLista,
         maxResults: videosPagina,
-        fields: "items(snippet(channelId),contentDetails),pageInfo"
+        fields: "items(snippet(channelId),contentDetails),pageInfo" //no se necesita configura lo que se solicita
     }
 
     //Variables de configuracion para objeto channels
@@ -300,20 +300,21 @@ $(document).ready(function(){
         $(".overlay-container").fadeOut().end().find(".window-container").removeClass("window-container-visible");
     });
 
+    //Boton para solicitar la informacion de la lista de reproduccion
     $(".dame").click(function(){
 
-        //Objeto de Configuracion para channnels
+        //Parte para armar el objeto de configuracion para channels
         var separador1 = "", separador2 = "";
-
         if(Boolean(channelTitle) && Boolean(channelDescription)){ separador1 = ","; }
-
         if(Boolean(channelTumbnails) && (Boolean(channelTitle) || Boolean(channelDescription))){ separador2 = ","; }
-
         objetoConfiguracionChannels.fields = "items(snippet("+channelTitle+separador1+channelDescription+separador2+channelTumbnails+"))";
 
+        //Parte para armar el objeto de configuracion video
         objetoConfiguracionVideo.fields = "items("+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
+        
+        console.log(objetoConfiguracionPlaylistItems);
+        console.log(objetoConfiguracionChannels);
         console.log(objetoConfiguracionVideo);
-
     });
 
     
