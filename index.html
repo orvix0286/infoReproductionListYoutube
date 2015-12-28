@@ -6,17 +6,22 @@
 		<link rel="stylesheet" href="estilo.css">
 		<script src="jquery.js"></script>
 		<script src="scriptPrincipal.js"></script>
+		<script src="https://apis.google.com/js/client.js"></script>
 	</head>
-	<body><div id="cajaFormulario">
+	<body>
+	<div id="cajaFormulario">
 		<form>
-			<p><h2>Id o Url:</h2>
-			<input type="text" id="idLista" placeholder="introduce el id o url de la lista de reproduccion." size="50">
-			<span class="dame">Dame</span>
-			</p>
-			
-			<span class="config">
-				<img src="img/configuracion.png" width="45">
+			<p class=""><h2 class="">Id o Url:</h2>
+				<input class="" type="text" id="idUrlLista" placeholder="introduce el id o url de la lista de reproduccion." size="50" value="https://www.youtube.com/watch?v=2T-duPg-TTU&list=PL5OcBItDro5Rp3ZvjC3Wv_Z1SoAy8dlye">
+				<span class="dame">Dame</span>
+
+				<span class="config">
+				<img src="img/configuracion.png" width="30">
 			</span>
+			</p>
+				
+			
+			</div>
 
 			<div class="overlay-container">
 				
@@ -30,7 +35,7 @@
 					<p><label for="videosPagina">Numero de videos por pagina</label>
 					<input type="number" id="videosPagina" size="2" min="1" max="50" value="15"></p>
 
-					<p><label for="cantidadVideos">Catidad de Videos</label>
+					<p><label for="cantidadVideos">Cantidad de Videos</label>
 					<input type="checkbox" id="cantidadVideos" checked></p>
 
 					<p><label for="duracionTotal">Duracion total</label>
@@ -83,6 +88,10 @@
 				</div>
 			</div>			
 		</form>
+		</div>
+
+		<div class="resultados">
+
 		</div>
 	</body>
 </html>

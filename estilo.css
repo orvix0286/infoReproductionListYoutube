@@ -13,9 +13,8 @@ body{
 }
 
 #cajaFormulario{
-	margin: auto;
 	text-align: center;
-	width: 500px;
+	width: 100%;
 }
 
 p{
@@ -175,3 +174,26 @@ h3{
 	font-size: 30px;
 	cursor: pointer;
 }
+
+.titulo{
+	display: inline;
+	position: relative;
+	top: 5px;
+}
+
+.resultado{
+	height: 0px;
+}
+
+.dame-result{
+	position: relative;
+	padding: 7px 20px;
+	display: inline;
+}
+
+.config-result{
+	position: relative;
+	top: 10px;
+	margin-left: 5px;
+}
+
