@@ -1,6 +1,12 @@
-@import url(https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,300italic,700&subset=latin,latin-ext);
-@import url(https://fonts.googleapis.com/css?family=Open+Sans&subset=latin,latin-ext);
-@import url(https://fonts.googleapis.com/css?family=Wire+One);
+@font-face{
+	font-family: 'Open Sans Condensed';
+	src: url("OpenSans-CondLight.ttf");
+}
+
+@font-face{
+	font-family: 'Wire One';
+	src: url("WireOne.ttf");
+}
 
 body{
 	font-family: 'Open Sans Condensed', sans-serif;

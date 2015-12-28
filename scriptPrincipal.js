@@ -24,8 +24,7 @@ $(document).ready(function(){
     }
     */
 
-    
-    //Objeto de Configuracion elemental
+    //Objeto de Configuracion basico para playListItems
     var objetoConfiguracionPlaylistItems = {
         part: "snippet,contentDetails",
         playlistId: idLista,
@@ -33,7 +32,7 @@ $(document).ready(function(){
         fields: "items(snippet(channelId),contentDetails),pageInfo"
     }
 
-    //Variables de configuracion para objeto
+    //Variables de configuracion para objeto channels
     var channelTitle = "title", 
         channelDescription = "",
         channelTumbnails = "";
@@ -64,7 +63,7 @@ $(document).ready(function(){
 
         var cadena = "snippet("+publishedAt+separador1+title+separador2+description+separador3+thumbnails+")"
         return cadena;   
-    }
+    };
 
     //Configura si solicito el titulo del video
     $("#videoTitulo").click(function(){
@@ -104,17 +103,128 @@ $(document).ready(function(){
         else{
             publishedAt = "";
         }
-        console.log(videoSnippet());
     });
 
-    var videoContentDetails = "contentDetails(duration))",
-        statistics = "";
+    //*****************************************************************
+
+    //Variables para formar la parte de contentDetails
+    var duration = "duration", definition = "";
+    
+    //Function para formar la parte de contentDetails
+    var videoContentDetails = function(){
+        var separador = "";
+        if(Boolean(definition) && Boolean(duration)){
+            separador = ",";
+        } else{
+            separador = "";
+        }
+        var cadena = "contentDetails("+duration+separador+definition+"))";
+        return cadena;
+    };
+
+    //Configura si solicita la duracion del video
+    $("#duracionVideo").click(function(){
+        if(!this.checked){
+            duration = "";
+        } else{
+            duration = "duration";
+        }
+    });
+
+    //Configura si solicita la calidad del video
+    $("#calidadVideo").click(function(){
+        if(this.checked){
+            definition = "definition";
+        } else{
+            definition = "";
+        }
+    });
+
+    //******************************************************************************
+    //Variables para armar la parte de estadistica
+    var viewCount = "",
+        likeCount = "",
+        dislikeCount = "",
+        favoriteCount = "", 
+        commentCount = "";
+
+    //Funcion para armar la parte de statistics
+    var statistics = function(){
+        var separador1 = "", separador2 = "", separador3 = "", separador4 = "";
+
+        if(Boolean(likeCount) && Boolean(viewCount)){
+            separador1 = ",";
+        }
+        if(Boolean(dislikeCount) && (Boolean(viewCount) || Boolean(likeCount))){
+            separador2 = ",";
+        }
+        if(Boolean(favoriteCount) && (Boolean(viewCount) || Boolean(likeCount) || Boolean(dislikeCount))){
+            separador3 = ",";
+        }
+        if(Boolean(commentCount) && (Boolean(viewCount) || Boolean(likeCount) || Boolean(dislikeCount) || Boolean(favoriteCount))){
+            separador4 = ",";
+        }
+
+        var cadena = "statistics("+viewCount+separador1+likeCount+separador2+dislikeCount+separador3+favoriteCount+separador4+commentCount+")";
+        return cadena;
+    };
+
+    //Configura si solicita la cantidad de visualizaciones
+    $("#cantidadVisualizaciones").click(function(){
+        if(this.checked){
+            viewCount = "viewCount";
+        }
+        else{
+            viewCount = "";
+        }
+    });
+
+    //Configura si solicita la cantidad de like
+    $("#cantidadMeGusta").click(function(){
+        if(this.checked){
+            likeCount = "likeCount";
+        }
+        else{
+            likeCount = "";
+        }
+    });
+
+    //Configura si solicita la cantidad de dislike
+    $("#cantidadNoMeGusta").click(function(){
+        if(this.checked){
+            dislikeCount = "dislikeCount";
+        }
+        else{
+            dislikeCount = "";
+        }
+    });
+
+    //Configura si solicita la cantidad de comentarios
+    $("#cantidadComentarios").click(function(){
+        if(this.checked){
+            commentCount = "commentCount";
+        }
+        else{
+            commentCount = "";
+        }
+    });
         
+    //Configura si solicita la cantida de favoritos
+    $("#cantidadFavoritos").click(function(){
+        if(this.checked){
+            favoriteCount = "favoriteCount";
+        }
+        else{
+            favoriteCount = "";
+        }
+    });
+
     var objetoConfiguracionVideo = {
         part: "contentDetails,snippet,statistics",
         id: videoId,
-        fields: "items("+videoSnippet()+","+videoContentDetails+","+statistics
+        fields: ""
     }
+    //******************************************************************************
 
     videosPagina = $("#videosPagina").attr("value");
     objetoConfiguracionPlaylistItems.maxResults = videosPagina;
@@ -178,9 +288,8 @@ $(document).ready(function(){
         }
     });
 
-    //Configura si solicito el titulo del video
-
-
+    
+    //Ventana modal
     $(".config").click(function(){
         $(".overlay-container").fadeIn(function(){
             $(".window-container.zoomout").addClass("window-container-visible");
@@ -202,6 +311,7 @@ $(document).ready(function(){
 
         objetoConfiguracionChannels.fields = "items(snippet("+channelTitle+separador1+channelDescription+separador2+channelTumbnails+"))";
 
+        objetoConfiguracionVideo.fields = "items("+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
         console.log(objetoConfiguracionVideo);
 
     });
