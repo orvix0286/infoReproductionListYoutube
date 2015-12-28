@@ -182,7 +182,7 @@ $(document).ready(function(){
         } else{
             separador = "";
         }
-        var cadena = "contentDetails("+duration+separador+definition+"))";
+        var cadena = "contentDetails("+duration+separador+definition+")";
         return cadena;
     };
 
@@ -340,7 +340,11 @@ $(document).ready(function(){
             $(".resultados").append(totalVideos);
 
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
-            var duracionTotal = "";
+            var textoDuracionTotal = "", calculoDuracionTotal = "";
+            if($("#duracionTotal")[0].checked){
+                textoDuracionTotal = "<p>Duracion Total de la Lista: "+calculoDuracionTotal+"</p>"
+                $(".resultados").append(textoDuracionTotal);                   
+            }
             /*NOTA !!!****************************************************
             Este calculo lo hago de ultimo por que necesito haber cargado 
             Todo los videos **********************************************/
@@ -365,16 +369,48 @@ $(document).ready(function(){
 
                 //Verificando si se seleccion la opcion de mostrar thumbnails del canal
                 if($("#thumbnailsCanal")[0].checked){
-                    var imagenThumbnails = "<p><img src="+"</p>";
+                    var imagenThumbnails = "<p><img src='"+responseChannels.result.items[0].snippet.thumbnails.medium.url+"' width='50'></p>";
+                    $(".resultados").append(imagenThumbnails);
                 }
 
-                console.log("responseChannels.result.items[0].snippet");
+                //Inserto el titulo de la lista de videos (lo puse aqui para se coloque al terminar el thumbnail del canal);
+                $(".resultados").append("<p><h3>Lista de Videos</h3></p>");
             });
-                                           
+            //Guardo la lista que contiene los id de los videos
+            var listaIdVideos = response.result.items;
+            //Bucle para hacer una peticion por cada video 
+            for(var i = 0, t = listaIdVideos.length; i<t; i++){
+                var idVideo = listaIdVideos[i].contentDetails.videoId;
+                //Inserto el id del video en el objeto de configuracion
+                objetoConfiguracionVideo.id = idVideo;
+                peticionVideo(); //llamo a la funcion que hace la peticion y procesa la informacion
+            }
            
         }, function(response){
-            console.log(response);
+            console.log(response); //funcion para mostrar errores
         });
+    }
+
+    //Funcion para hacer la peticion y procesar la informacion de los videos
+    var peticionVideo = function(){
+        var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
+                requestVideo.then(function(responseVideos){
+                    //Verifico si la opcion de mostrar titulo fue seleccionada
+                    if($("#videoTitulo")[0].checked){
+                        var textoVideoTitulo = "<div><p>"+responseVideos.result.items[0].snippet.title+"</p></div>";
+                        $(".resultados").append(textoVideoTitulo);
+                    }
+
+                    if($("#descripcionVideo")[0].checked){
+                        var textoModificado = responseVideos.result.items[0].snippet.description;
+                        console.log(textoModificado);
+                        //var textoDescripcionVideo = "<p>"+textoModificado+"</p>"
+                        //$(".resultados").append(textoDescripcionVideo);
+                    }
+
+                }, function(responseVideos){
+                    console.log(responseVideos);//funcion para mostar errores
+                });
     }
 
     //Accion para mostrar la informacion de la lista de reproduccion
