@@ -1,7 +1,6 @@
 $(document).ready(function(){
     //Variables usadas en los objetos de configuracion
     var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal;
-
     //*******************************************************************************
     //Objeto de configuracion para playListItems (opciones)
 
@@ -336,8 +335,9 @@ $(document).ready(function(){
             //Verifico si esta seleccionada la opcion para mostrar Cantidad de Videos
             var totalVideos = "";
             if(checkedCantidadVideos){
-                totalVideos = "Cantidad de Videos de la Lista: "+response.result.pageInfo.totalResults+"<br>"
+                totalVideos = "<p>Cantidad de Videos de la Lista: "+response.result.pageInfo.totalResults+"</p>"
             }
+            $(".resultados").append(totalVideos);
 
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var duracionTotal = "";
@@ -345,14 +345,33 @@ $(document).ready(function(){
             Este calculo lo hago de ultimo por que necesito haber cargado 
             Todo los videos **********************************************/
 
-            //Verifico si esta seleccionada la opcion para mostrar Titulo del Canal
-            var tituloCanal = "";
-            
+            //Obtener informacion del canal asignando el id del canal
+            idCanal = response.result.items[0].snippet.channelId;
+            objetoConfiguracionChannels.id = idCanal;
+            //Haciendo la solicitud y procesando
+            var requestChannels = gapi.client.youtube.channels.list(objetoConfiguracionChannels);
+            requestChannels.then(function(responseChannels){
+                //Verificando si se selecciono la opcion de mostrar titulo del canal
+                if($("#tituloCanal")[0].checked){   
+                   var textoTituloCanal = "<p>Titulo del Canal: "+responseChannels.result.items[0].snippet.title+"</p>"; 
+                   $(".resultados").append(textoTituloCanal);                   
+                }
 
-            $(".resultados").html(totalVideos);
+                //Verificando si se selecciono la opcion de mostrar descripcion del canal
+                if($("#descripcionCanal")[0].checked){
+                    var textoDescripcionCanal = "<p>Descripcion del Canal: "+responseChannels.result.items[0].snippet.description+"</p>"; 
+                    $(".resultados").append(textoDescripcionCanal);                      
+                }
 
-            console.log(response);
-            
+                //Verificando si se seleccion la opcion de mostrar thumbnails del canal
+                if($("#thumbnailsCanal")[0].checked){
+                    var imagenThumbnails = "<p><img src="+"</p>";
+                }
+
+                console.log("responseChannels.result.items[0].snippet");
+            });
+                                           
+           
         }, function(response){
             console.log(response);
         });
@@ -366,10 +385,14 @@ $(document).ready(function(){
         //Aqui se arma el campo fields para el objeto de configuracion video
         objetoConfiguracionVideo.fields = "items("+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
 
+        //Inserto clases para modificar la pocicion de la caja de busqueda
         $("form p:first").addClass("resultado");
         $("form h2:first").addClass("titulo");
         $(".dame").addClass("dame-result");
         $(".config").addClass("config-result");
+
+        //Borrar la informacion cada vez que se muestra un resultado nuevo
+        $(".resultados").empty();
 
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
