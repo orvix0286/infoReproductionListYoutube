@@ -25,7 +25,6 @@ $(document).ready(function(){
     //Configura si se muestran la cantidad de videos (solo se usa para mostrar)
     checkedCantidadVideos = true;
 
-<<<<<<< HEAD
     $("#cantidadVideos").click(function(){
         if(this.checked){
             checkedCantidadVideos = true;
@@ -49,15 +48,6 @@ $(document).ready(function(){
 
     //*******************************************************************************
     //Objeto de configuracion para channels (armado y opciones)
-=======
-    //Objeto de Configuracion basico para playListItems
-    var objetoConfiguracionPlaylistItems = {
-        part: "snippet,contentDetails",
-        playlistId: idLista,
-        maxResults: videosPagina,
-        fields: "items(snippet(channelId),contentDetails),pageInfo" //no se necesita configura lo que se solicita
-    }
->>>>>>> 079fb114aaaad431e88c4ec86d65010ebef7a033
 
     //Variables de configuracion para objeto channels
     var channelTitle = "title", 
@@ -343,7 +333,6 @@ $(document).ready(function(){
         var request = gapi.client.youtube.playlistItems.list(objetoConfiguracionPlaylistItems);
         request.then(function(response){
 
-<<<<<<< HEAD
             //Verifico si esta seleccionada la opcion para mostrar Cantidad de Videos
             var totalVideos = "";
             if(checkedCantidadVideos){
@@ -381,24 +370,6 @@ $(document).ready(function(){
         $("form h2:first").addClass("titulo");
         $(".dame").addClass("dame-result");
         $(".config").addClass("config-result");
-=======
-    //Boton para solicitar la informacion de la lista de reproduccion
-    $(".dame").click(function(){
-
-        //Parte para armar el objeto de configuracion para channels
-        var separador1 = "", separador2 = "";
-        if(Boolean(channelTitle) && Boolean(channelDescription)){ separador1 = ","; }
-        if(Boolean(channelTumbnails) && (Boolean(channelTitle) || Boolean(channelDescription))){ separador2 = ","; }
-        objetoConfiguracionChannels.fields = "items(snippet("+channelTitle+separador1+channelDescription+separador2+channelTumbnails+"))";
-
-        //Parte para armar el objeto de configuracion video
-        objetoConfiguracionVideo.fields = "items("+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
-        
-        console.log(objetoConfiguracionPlaylistItems);
-        console.log(objetoConfiguracionChannels);
-        console.log(objetoConfiguracionVideo);
-    });
->>>>>>> 079fb114aaaad431e88c4ec86d65010ebef7a033
 
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
