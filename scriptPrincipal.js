@@ -2,6 +2,7 @@ $(document).ready(function(){
     //Variables usadas en los objetos de configuracion
     var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal;
     var totalSegundos = 0;
+    var infoVideos = {};
     //*******************************************************************************
     //Objeto de configuracion para playListItems (opciones)
 
@@ -396,6 +397,7 @@ $(document).ready(function(){
     var peticionVideo = function(indice){
         var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
                 requestVideo.then(function(responseVideos){
+                    infoVideos = responseVideos.result;
                     //Verifico si la opcion de mostrar titulo fue seleccionada
                     $(".resultados").append("<div class='video"+indice+"'></div>")
                     if($("#videoTitulo")[0].checked){
@@ -465,9 +467,12 @@ $(document).ready(function(){
                         $(".video"+indice).append(textoCantidadFavoritos);
                     }
 
+                   
+
                 }, function(responseVideos){
                     console.log(responseVideos);//funcion para mostar errores
                 });
+                console.log(infoVideos);
     }
 
     function formatoTiempo(tiempoOrigen){
