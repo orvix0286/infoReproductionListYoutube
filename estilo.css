@@ -17,7 +17,7 @@ body{
 	width: 100%;
 }
 
-p{
+form p{
 	height: 34px;
 }
 
@@ -197,3 +197,6 @@ h3{
 	margin-left: 5px;
 }
 
+.resultados div{
+	border-top: 1px solid #333;
+}

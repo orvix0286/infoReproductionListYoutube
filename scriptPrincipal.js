@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //Variables usadas en los objetos de configuracion
     var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal;
+    var totalSegundos = 0;
     //*******************************************************************************
     //Objeto de configuracion para playListItems (opciones)
 
@@ -50,8 +51,8 @@ $(document).ready(function(){
 
     //Variables de configuracion para objeto channels
     var channelTitle = "title", 
-        channelDescription = "",
-        channelTumbnails = "";
+        channelDescription = "description",//Opcional
+        channelTumbnails = "thumbnails(medium)";//Opcional
 
     //Objecto de configuracion para la api channels    
     var objetoConfiguracionChannels = {
@@ -110,10 +111,10 @@ $(document).ready(function(){
     }
 
     var //variables de snippet para video
-        publishedAt = "", 
+        publishedAt = "publishedAt",//Opcional 
         title = "title",
-        description = "",
-        thumbnails = "thumbnails(medium)";
+        description = "description",//Opcional
+        thumbnails = "thumbnails(medium)";//Opcional
 
     //Funcion para formar la parte de snippet
     var videoSnippet = function(){
@@ -172,7 +173,7 @@ $(document).ready(function(){
     });
 
     //Variables para formar la parte de contentDetails
-    var duration = "duration", definition = "";
+    var duration = "duration", definition = "definition"//Opcional;
     
     //Function para formar la parte de contentDetails
     var videoContentDetails = function(){
@@ -205,11 +206,11 @@ $(document).ready(function(){
     });
 
     //Variables para armar la parte de estadistica
-    var viewCount = "",
-        likeCount = "",
-        dislikeCount = "",
-        favoriteCount = "", 
-        commentCount = "";
+    var viewCount = "viewCount",//Opcional
+        likeCount = "likeCount",//Opcional
+        dislikeCount = "dislikeCount",//Opcional
+        favoriteCount = "favoriteCount",//Opcional
+        commentCount = "commentCount";//Opcional
 
     //Funcion para armar la parte de statistics
     var statistics = function(){
@@ -342,7 +343,7 @@ $(document).ready(function(){
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var textoDuracionTotal = "", calculoDuracionTotal = "";
             if($("#duracionTotal")[0].checked){
-                textoDuracionTotal = "<p>Duracion Total de la Lista: "+calculoDuracionTotal+"</p>"
+                textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>"
                 $(".resultados").append(textoDuracionTotal);                   
             }
             /*NOTA !!!****************************************************
@@ -374,7 +375,7 @@ $(document).ready(function(){
                 }
 
                 //Inserto el titulo de la lista de videos (lo puse aqui para se coloque al terminar el thumbnail del canal);
-                $(".resultados").append("<p><h3>Lista de Videos</h3></p>");
+                $(".resultados").append("<h3>Lista de Videos</h3>");
             });
             //Guardo la lista que contiene los id de los videos
             var listaIdVideos = response.result.items;
@@ -383,7 +384,7 @@ $(document).ready(function(){
                 var idVideo = listaIdVideos[i].contentDetails.videoId;
                 //Inserto el id del video en el objeto de configuracion
                 objetoConfiguracionVideo.id = idVideo;
-                peticionVideo(); //llamo a la funcion que hace la peticion y procesa la informacion
+                peticionVideo(i); //llamo a la funcion que hace la peticion y procesa la informacion
             }
            
         }, function(response){
@@ -392,25 +393,129 @@ $(document).ready(function(){
     }
 
     //Funcion para hacer la peticion y procesar la informacion de los videos
-    var peticionVideo = function(){
+    var peticionVideo = function(indice){
         var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
                 requestVideo.then(function(responseVideos){
                     //Verifico si la opcion de mostrar titulo fue seleccionada
+                    $(".resultados").append("<div class='video"+indice+"'></div>")
                     if($("#videoTitulo")[0].checked){
-                        var textoVideoTitulo = "<div><p>"+responseVideos.result.items[0].snippet.title+"</p></div>";
-                        $(".resultados").append(textoVideoTitulo);
+                        var textoVideoTitulo = "<p>"+responseVideos.result.items[0].snippet.title+"</p>";
+                        $(".video"+indice).append(textoVideoTitulo);
                     }
 
+                    //Verifico si la opcion de mostar descripccion fue seleccionada
                     if($("#descripcionVideo")[0].checked){
-                        var textoModificado = responseVideos.result.items[0].snippet.description;
-                        console.log(textoModificado);
-                        //var textoDescripcionVideo = "<p>"+textoModificado+"</p>"
-                        //$(".resultados").append(textoDescripcionVideo);
+                        var textoDescripcionVideo = "<p>Descripción:</p><p>"+responseVideos.result.items[0].snippet.description+"</p>";
+                        $(".video"+indice).append(textoDescripcionVideo);
+                    }
+
+                    //Veirifico si la opcion de mostrar thumbnails fue seleccionada
+                    if($("#thumbnailsVideo")[0].checked){
+                        var imagenThumbnails = "<p><img src='"+responseVideos.result.items[0].snippet.thumbnails.medium.url+"' width='50'></p>";
+                        $(".video"+indice).append(imagenThumbnails);
+                    }
+
+                    //Verifico si la opcion de mostrar duracion del video fue seleccionada
+                    if($("#duracionVideo")[0].checked){
+                        var tiempo = formatoTiempo(responseVideos.result.items[0].contentDetails.duration);
+                        var textoDuracionVideo = "<p>Duracion del Video: "+tiempo+"</p>";
+                        $(".video"+indice).append(textoDuracionVideo);
+                    }
+
+                    //Verifico si la opcion de mostrar la fecha de publicacion fue seleccionada
+                    if($("#fechaPublicacion")[0].checked){
+                        var fecha = responseVideos.result.items[0].snippet.publishedAt;
+                        var textoFechaPublicacion = "<p>Fecha de publicacion: "+fecha.substring(0,10)+"</p>";
+                        $(".video"+indice).append(textoFechaPublicacion);
+                    }
+
+                    //Verifico si la opcion de mostrar calidad del video fue seleccionada
+                    if($("#calidadVideo")[0].checked){
+                        var textoCalidadVideo = "<p>Calidad del Video: "+responseVideos.result.items[0].contentDetails.definition+"</p>";
+                        $(".video"+indice).append(textoCalidadVideo);
+                    }
+
+                    //Verifico si la opcion de mostrar cantidad de visualizaciones fue seleccionada
+                    if($("#cantidadVisualizaciones")[0].checked){
+                        var textoCantidadVisualizaciones = "<p>Cantidad de visualizaciones: "+responseVideos.result.items[0].statistics.viewCount+"</p>";
+                        $(".video"+indice).append(textoCantidadVisualizaciones);
+                    }
+
+                    //Verifico si la opcion de mostrar cantidad de me gusta fue seleccionada
+                    if($("#cantidadMeGusta")[0].checked){
+                        var textoCantidadMeGusta = "<p>Cantidad de Me Gusta: "+responseVideos.result.items[0].statistics.likeCount+"</p>";
+                        $(".video"+indice).append(textoCantidadMeGusta);
+                    }
+
+                    //Verifico si la opcion de mostrar cantidad de no me gusta fue seleccionada
+                    if($("#cantidadNoMeGusta")[0].checked){
+                        var textoCantidadNoMeGusta = "<p>Cantidad de No Me Gusta: "+responseVideos.result.items[0].statistics.dislikeCount+"</p>";
+                        $(".video"+indice).append(textoCantidadNoMeGusta);
+                    }
+
+                    //Verifico si la opcion de mostrar la cantidad de comentarios fue seleccionada
+                    if($("#cantidadComentarios")[0].checked){
+                        var textoCantidadComentarios = "<p>Cantidad de Comentarios: "+responseVideos.result.items[0].statistics.commentCount+"</p>";
+                        $(".video"+indice).append(textoCantidadComentarios);
+                    }
+
+                    //Verifico si la opcion de mostrar la cantidad de favoritos fue seleccionada
+                    if($("#cantidadFavoritos")[0].checked){
+                        var textoCantidadFavoritos = "<p>Cantidad de Favoritos: "+responseVideos.result.items[0].statistics.favoriteCount+"</p>";
+                        $(".video"+indice).append(textoCantidadFavoritos);
                     }
 
                 }, function(responseVideos){
                     console.log(responseVideos);//funcion para mostar errores
                 });
+    }
+
+    function formatoTiempo(tiempoOrigen){
+        var h = "00";
+        var m = "00";
+        var s = "00";
+
+        if(tiempoOrigen.match(/[0-9][0-9]H|[0-9]H/)){
+            h =  tiempoOrigen.match(/[0-9][0-9]H|[0-9]H/)[0].match(/[0-9][0-9]|[0-9]/);
+        }
+        
+        if(tiempoOrigen.match(/[0-9][0-9]M|[0-9]M/)){
+            m =  tiempoOrigen.match(/[0-9][0-9]M|[0-9]M/)[0].match(/[0-9][0-9]|[0-9]/);
+        }
+        
+        if(tiempoOrigen.match(/[0-9][0-9]S|[0-9]S/)){
+            s =  tiempoOrigen.match(/[0-9][0-9]S|[0-9]S/)[0].match(/[0-9][0-9]|[0-9]/);
+        }
+        
+        var tiempo = h+":"+m+":"+s;
+        var valorHora = parseInt(h);
+        var valorMinutos = parseInt(m);
+        var valorSegundos = parseInt(s);    
+        calculoTotal(valorHora, valorMinutos, valorSegundos);
+        return tiempo;
+    }
+
+    function calculoTotal(valorHora, valorMinutos, valorSegundos){
+        totalSegundos += valorHora * 3600 + valorMinutos * 60 + valorSegundos;
+        var calculoHora = Math.floor(totalSegundos / 3600);
+        var calculoMinutos = (totalSegundos / 3600 - calculoHora) * 60;
+        var calculoSegundos = (calculoMinutos - Math.floor(calculoMinutos)) * 60;
+
+        if(calculoHora<10){ calculoHora = "0"+calculoHora; }
+
+        if(Math.floor(calculoMinutos)<10){ 
+            calculoMinutos = "0"+Math.floor(calculoMinutos); 
+        } else{
+            calculoMinutos = Math.floor(calculoMinutos);
+        }
+
+        if(calculoSegundos<10){ 
+            calculoSegundos = "0"+Math.floor(calculoSegundos); 
+        } else{
+            calculoSegundos = Math.floor(calculoSegundos); 
+        }
+        var textoDuracionTotal = calculoHora+" : "+calculoMinutos+" : "+calculoSegundos;
+
     }
 
     //Accion para mostrar la informacion de la lista de reproduccion
