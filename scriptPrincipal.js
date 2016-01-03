@@ -1,6 +1,6 @@
 $(document).ready(function(){
     //Variables usadas en los objetos de configuracion
-    var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal;
+    var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal, checkedDuracionVideo;
     var totalSegundos = 0;
     var infoVideos = {};
     //*******************************************************************************
@@ -52,8 +52,8 @@ $(document).ready(function(){
 
     //Variables de configuracion para objeto channels
     var channelTitle = "title", 
-        channelDescription = "description",//Opcional
-        channelTumbnails = "thumbnails(medium)";//Opcional
+        channelDescription = "",
+        channelTumbnails = "thumbnails(medium)";
 
     //Objecto de configuracion para la api channels    
     var objetoConfiguracionChannels = {
@@ -106,16 +106,16 @@ $(document).ready(function(){
     //Objeto de configuracion para video (armado y opciones)
 
     var objetoConfiguracionVideo = {
-        part: "contentDetails,snippet,statistics",
+        part: "id,player,contentDetails,snippet,statistics",
         id: videoId,
         fields: ""
     }
 
     var //variables de snippet para video
-        publishedAt = "publishedAt",//Opcional 
+        publishedAt = "thumbnails(medium)",
         title = "title",
-        description = "description",//Opcional
-        thumbnails = "thumbnails(medium)";//Opcional
+        description = "",
+        thumbnails = "";
 
     //Funcion para formar la parte de snippet
     var videoSnippet = function(){
@@ -174,7 +174,7 @@ $(document).ready(function(){
     });
 
     //Variables para formar la parte de contentDetails
-    var duration = "duration", definition = "definition"//Opcional;
+    var duration = "duration", definition = "";
     
     //Function para formar la parte de contentDetails
     var videoContentDetails = function(){
@@ -188,12 +188,13 @@ $(document).ready(function(){
         return cadena;
     };
 
+    checkedDuracionVideo = true;
     //Configura si solicita la duracion del video
     $("#duracionVideo").click(function(){
         if(!this.checked){
-            duration = "";
+            checkedDuracionVideo = false;
         } else{
-            duration = "duration";
+            checkedDuracionVideo = true;
         }
     });
 
@@ -207,11 +208,11 @@ $(document).ready(function(){
     });
 
     //Variables para armar la parte de estadistica
-    var viewCount = "viewCount",//Opcional
-        likeCount = "likeCount",//Opcional
-        dislikeCount = "dislikeCount",//Opcional
-        favoriteCount = "favoriteCount",//Opcional
-        commentCount = "commentCount";//Opcional
+    var viewCount = "",
+        likeCount = "",
+        dislikeCount = "",
+        favoriteCount = "",
+        commentCount = "";
 
     //Funcion para armar la parte de statistics
     var statistics = function(){
@@ -341,16 +342,14 @@ $(document).ready(function(){
                 $(".infoLista").append(totalVideos);
             }
             
-
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var textoDuracionTotal = "", calculoDuracionTotal = "";
             if($("#duracionTotal")[0].checked){
                 textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>";
                 $(".infoLista").append(textoDuracionTotal);                   
             }
-            /*NOTA !!!****************************************************
-            Este calculo lo hago de ultimo por que necesito haber cargado 
-            Todo los videos **********************************************/
+            
+            $(".infoLista").prepend("<div class='infoCanal'></div>")
 
             //Obtener informacion del canal asignando el id del canal
             idCanal = response.result.items[0].snippet.channelId;
@@ -361,19 +360,19 @@ $(document).ready(function(){
                 //Verificando si se selecciono la opcion de mostrar titulo del canal
                 if($("#tituloCanal")[0].checked){   
                    var textoTituloCanal = "<p>Titulo del Canal: "+responseChannels.result.items[0].snippet.title+"</p>"; 
-                   $(".infoLista").append(textoTituloCanal);                   
+                   $(".infoCanal").append(textoTituloCanal);                   
                 }
 
                 //Verificando si se selecciono la opcion de mostrar descripcion del canal
                 if($("#descripcionCanal")[0].checked){
                     var textoDescripcionCanal = "<p>Descripcion del Canal: "+responseChannels.result.items[0].snippet.description+"</p>"; 
-                    $(".infoLista").append(textoDescripcionCanal);                      
+                    $(".infoCanal").append(textoDescripcionCanal);                      
                 }
 
                 //Verificando si se seleccion la opcion de mostrar thumbnails del canal
                 if($("#thumbnailsCanal")[0].checked){
                     var imagenThumbnails = "<p><img src='"+responseChannels.result.items[0].snippet.thumbnails.medium.url+"' width='50'></p>";
-                    $(".infoLista").append(imagenThumbnails);
+                    $(".infoCanal").append(imagenThumbnails);
                 }
             });
 
@@ -400,11 +399,10 @@ $(document).ready(function(){
     var peticionVideo = function(indice){
         var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
                 requestVideo.then(function(responseVideos){
-                    infoVideos = responseVideos.result;
+                    var infoIdVideo = responseVideos.result.items[0].id;
                     //Verifico si la opcion de mostrar titulo fue seleccionada
-                    
                     if($("#videoTitulo")[0].checked){
-                        var textoVideoTitulo = "<p>"+responseVideos.result.items[0].snippet.title+"</p>";
+                        var textoVideoTitulo = "<p id='p"+infoIdVideo+"'><span class='linkVideo' id='"+infoIdVideo+"'>"+responseVideos.result.items[0].snippet.title+"</span><br></p>";
                         $(".video"+indice).append(textoVideoTitulo);
                     }
 
@@ -421,8 +419,8 @@ $(document).ready(function(){
                     }
 
                     //Verifico si la opcion de mostrar duracion del video fue seleccionada
+                    var tiempo = formatoTiempo(responseVideos.result.items[0].contentDetails.duration);
                     if($("#duracionVideo")[0].checked){
-                        var tiempo = formatoTiempo(responseVideos.result.items[0].contentDetails.duration);
                         var textoDuracionVideo = "<p>Duracion del Video: "+tiempo+"</p>";
                         $(".video"+indice).append(textoDuracionVideo);
                     }
@@ -469,6 +467,18 @@ $(document).ready(function(){
                         var textoCantidadFavoritos = "<p>Cantidad de Favoritos: "+responseVideos.result.items[0].statistics.favoriteCount+"</p>";
                         $(".video"+indice).append(textoCantidadFavoritos);
                     }
+
+                    $("#"+infoIdVideo).click(function(e){
+                        if($("#cajaVideo"+infoIdVideo).length){
+                            $("#cajaVideo"+infoIdVideo).remove();
+                        } else{
+                            $("#p"+infoIdVideo).append("<span id='cajaVideo"+infoIdVideo+"'><iframe width='640' height='360' src='//www.youtube.com/embed/"+infoIdVideo+"' frameborder='0' allowfullscreen></iframe></span>");
+                        }
+                        
+                        //console.log($("#cajaVideo"+infoIdVideo));
+
+                    });
+    
 
                 }, function(responseVideos){
                     console.log(responseVideos);//funcion para mostar errores
@@ -531,7 +541,7 @@ $(document).ready(function(){
         objetoConfiguracionChannels.fields = channels();
 
         //Aqui se arma el campo fields para el objeto de configuracion video
-        objetoConfiguracionVideo.fields = "items("+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
+        objetoConfiguracionVideo.fields = "items(id,player,"+videoSnippet()+","+videoContentDetails()+","+statistics()+")";
 
         //Inserto clases para modificar la pocicion de la caja de busqueda
         $("form p:first").addClass("resultado");
@@ -542,10 +552,9 @@ $(document).ready(function(){
         //Borrar la informacion cada vez que se muestra un resultado nuevo
         $(".infoLista").empty();
         $(".infoListaVideos").empty();
+        totalSegundos = 0; //Reinicio la variable de calculo de duracion
 
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
-    }); 
-
-     
+    });      
 });

@@ -200,3 +200,16 @@ h3{
 .infoListaVideos div{
 	border-top: 1px solid #333;
 }
+
+.linkVideo{
+}
+
+.linkVideo:hover{
+	cursor: pointer;
+	font-weight: bold;
+	color: blue;
+}
+
+.linkVideo iframe{
+	display: block;
+}
