@@ -338,14 +338,15 @@ $(document).ready(function(){
             var totalVideos = "";
             if(checkedCantidadVideos){
                 totalVideos = "<p>Cantidad de Videos de la Lista: "+response.result.pageInfo.totalResults+"</p>"
+                $(".infoLista").append(totalVideos);
             }
-            $(".resultados").append(totalVideos);
+            
 
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var textoDuracionTotal = "", calculoDuracionTotal = "";
             if($("#duracionTotal")[0].checked){
                 textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>"
-                $(".resultados").append(textoDuracionTotal);                   
+                $(".infoLista").append(textoDuracionTotal);                   
             }
             /*NOTA !!!****************************************************
             Este calculo lo hago de ultimo por que necesito haber cargado 
@@ -360,24 +361,25 @@ $(document).ready(function(){
                 //Verificando si se selecciono la opcion de mostrar titulo del canal
                 if($("#tituloCanal")[0].checked){   
                    var textoTituloCanal = "<p>Titulo del Canal: "+responseChannels.result.items[0].snippet.title+"</p>"; 
-                   $(".resultados").append(textoTituloCanal);                   
+                   $(".infoLista").append(textoTituloCanal);                   
                 }
 
                 //Verificando si se selecciono la opcion de mostrar descripcion del canal
                 if($("#descripcionCanal")[0].checked){
                     var textoDescripcionCanal = "<p>Descripcion del Canal: "+responseChannels.result.items[0].snippet.description+"</p>"; 
-                    $(".resultados").append(textoDescripcionCanal);                      
+                    $(".infoLista").append(textoDescripcionCanal);                      
                 }
 
                 //Verificando si se seleccion la opcion de mostrar thumbnails del canal
                 if($("#thumbnailsCanal")[0].checked){
                     var imagenThumbnails = "<p><img src='"+responseChannels.result.items[0].snippet.thumbnails.medium.url+"' width='50'></p>";
-                    $(".resultados").append(imagenThumbnails);
+                    $(".infoLista").append(imagenThumbnails);
                 }
-
-                //Inserto el titulo de la lista de videos (lo puse aqui para se coloque al terminar el thumbnail del canal);
-                $(".resultados").append("<h3>Lista de Videos</h3>");
             });
+
+            //Inserto el titulo de la lista de videos (lo puse aqui para se coloque al terminar el thumbnail del canal);
+            $(".infoListaVideos").append("<h3>Lista de Videos</h3>");
+            
             //Guardo la lista que contiene los id de los videos
             var listaIdVideos = response.result.items;
             //Bucle para hacer una peticion por cada video 
@@ -385,6 +387,7 @@ $(document).ready(function(){
                 var idVideo = listaIdVideos[i].contentDetails.videoId;
                 //Inserto el id del video en el objeto de configuracion
                 objetoConfiguracionVideo.id = idVideo;
+                $(".infoListaVideos").append("<div class='video"+i+"'></div>");
                 peticionVideo(i); //llamo a la funcion que hace la peticion y procesa la informacion
             }
            
@@ -399,7 +402,7 @@ $(document).ready(function(){
                 requestVideo.then(function(responseVideos){
                     infoVideos = responseVideos.result;
                     //Verifico si la opcion de mostrar titulo fue seleccionada
-                    $(".resultados").append("<div class='video"+indice+"'></div>")
+                    
                     if($("#videoTitulo")[0].checked){
                         var textoVideoTitulo = "<p>"+responseVideos.result.items[0].snippet.title+"</p>";
                         $(".video"+indice).append(textoVideoTitulo);
@@ -467,12 +470,10 @@ $(document).ready(function(){
                         $(".video"+indice).append(textoCantidadFavoritos);
                     }
 
-                   
-
                 }, function(responseVideos){
                     console.log(responseVideos);//funcion para mostar errores
                 });
-                console.log(infoVideos);
+                
     }
 
     function formatoTiempo(tiempoOrigen){
@@ -538,9 +539,12 @@ $(document).ready(function(){
         $(".config").addClass("config-result");
 
         //Borrar la informacion cada vez que se muestra un resultado nuevo
-        $(".resultados").empty();
+        $(".infoLista").empty();
+        $(".infoListaVideos").empty();
 
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
-    });  
+    }); 
+
+     
 });
