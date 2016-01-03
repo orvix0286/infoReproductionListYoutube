@@ -345,7 +345,7 @@ $(document).ready(function(){
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var textoDuracionTotal = "", calculoDuracionTotal = "";
             if($("#duracionTotal")[0].checked){
-                textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>"
+                textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>";
                 $(".infoLista").append(textoDuracionTotal);                   
             }
             /*NOTA !!!****************************************************
@@ -520,7 +520,8 @@ $(document).ready(function(){
         } else{
             calculoSegundos = Math.floor(calculoSegundos); 
         }
-        var textoDuracionTotal = calculoHora+" : "+calculoMinutos+" : "+calculoSegundos;
+        var numeroDuracionTotal = calculoHora+" : "+calculoMinutos+" : "+calculoSegundos;
+        $(".duracion").text(numeroDuracionTotal);
 
     }
 
