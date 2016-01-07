@@ -1,6 +1,7 @@
 $(document).ready(function(){
     //Variables usadas en los objetos de configuracion
-    var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal, checkedDuracionVideo;
+    var idLista, idCanal, videoId, videosPagina, checkedCantidadVideos, checkedDuracionTotal, 
+    checkedDuracionVideo, varPageToken, varPageTokenCalculo, control;
     var totalSegundos = 0;
     var infoVideos = {};
     //*******************************************************************************
@@ -11,7 +12,7 @@ $(document).ready(function(){
         part: "snippet,contentDetails",
         playlistId: "",
         maxResults: videosPagina,
-        fields: "items(snippet(channelId),contentDetails),pageInfo"
+        fields: "items(snippet(channelId),contentDetails),pageInfo,nextPageToken,prevPageToken"
     }
  
     //Se carga el valor por defeto a la opcion maxResults (numero de videos por pagina)
@@ -337,14 +338,14 @@ $(document).ready(function(){
 
             //Verifico si esta seleccionada la opcion para mostrar Cantidad de Videos
             var totalVideos = "";
-            if(checkedCantidadVideos){
+            if(checkedCantidadVideos && control){
                 totalVideos = "<p>Cantidad de Videos de la Lista: "+response.result.pageInfo.totalResults+"</p>"
                 $(".infoLista").append(totalVideos);
             }
             
             //Verifico si esta seleccionada la opcion para mostrar Duracion total
             var textoDuracionTotal = "", calculoDuracionTotal = "";
-            if($("#duracionTotal")[0].checked){
+            if($("#duracionTotal")[0].checked  && control){
                 textoDuracionTotal = "<p >Duracion Total de la Lista: <span class='duracion'></span></p>";
                 $(".infoLista").append(textoDuracionTotal);                   
             }
@@ -358,37 +359,54 @@ $(document).ready(function(){
             var requestChannels = gapi.client.youtube.channels.list(objetoConfiguracionChannels);
             requestChannels.then(function(responseChannels){
                 //Verificando si se selecciono la opcion de mostrar titulo del canal
-                if($("#tituloCanal")[0].checked){   
+                if($("#tituloCanal")[0].checked  && control){   
                    var textoTituloCanal = "<p>Titulo del Canal: "+responseChannels.result.items[0].snippet.title+"</p>"; 
                    $(".infoCanal").append(textoTituloCanal);                   
                 }
 
                 //Verificando si se selecciono la opcion de mostrar descripcion del canal
-                if($("#descripcionCanal")[0].checked){
+                if($("#descripcionCanal")[0].checked  && control){
                     var textoDescripcionCanal = "<p>Descripcion del Canal: "+responseChannels.result.items[0].snippet.description+"</p>"; 
                     $(".infoCanal").append(textoDescripcionCanal);                      
                 }
 
                 //Verificando si se seleccion la opcion de mostrar thumbnails del canal
-                if($("#thumbnailsCanal")[0].checked){
+                if($("#thumbnailsCanal")[0].checked  && control){
                     var imagenThumbnails = "<p><img src='"+responseChannels.result.items[0].snippet.thumbnails.medium.url+"' width='50'></p>";
                     $(".infoCanal").append(imagenThumbnails);
                 }
             });
 
             //Inserto el titulo de la lista de videos (lo puse aqui para se coloque al terminar el thumbnail del canal);
-            $(".infoListaVideos").append("<h3>Lista de Videos</h3>");
+            $(".infoListaVideos").append("<h3>Lista de Videos</h3>");  
+
             
+            if(response.result.prevPageToken){
+                $(".infoListaVideos").append("<span class='botonanterior'>Anterior</spam>");
+                $(".botonanterior").click(function(){
+                    control = false;
+                    varPageToken = response.result.prevPageToken;
+                    objetoConfiguracionPlaylistItems.pageToken = varPageToken;
+                    $(".infoListaVideos").empty();
+                    peticion();
+                });          
+            }
+            
+            if(response.result.nextPageToken){
+                $(".infoListaVideos").append("<span class='botonsiguiente'>Siguiente</spam>");
+                $(".botonsiguiente").click(function(){
+                    control = false;
+                    varPageToken = response.result.nextPageToken;
+                    objetoConfiguracionPlaylistItems.pageToken = varPageToken;
+                    $(".infoListaVideos").empty();
+                    peticion();
+                });          
+            }
+
             //Guardo la lista que contiene los id de los videos
             var listaIdVideos = response.result.items;
             //Bucle para hacer una peticion por cada video 
-            for(var i = 0, t = listaIdVideos.length; i<t; i++){
-                var idVideo = listaIdVideos[i].contentDetails.videoId;
-                //Inserto el id del video en el objeto de configuracion
-                objetoConfiguracionVideo.id = idVideo;
-                $(".infoListaVideos").append("<div class='video"+i+"'></div>");
-                peticionVideo(i); //llamo a la funcion que hace la peticion y procesa la informacion
-            }
+            peticionVideo(listaIdVideos);
            
         }, function(response){
             console.log(response); //funcion para mostrar errores
@@ -396,8 +414,10 @@ $(document).ready(function(){
     }
 
     //Funcion para hacer la peticion y procesar la informacion de los videos
-    var peticionVideo = function(indice){
-        var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
+    var peticionVideo = function(listaIdVideos){
+        
+        var estructuraHtmlVideo = function(indice){
+            var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
                 requestVideo.then(function(responseVideos){
                     var infoIdVideo = responseVideos.result.items[0].id;
                     //Verifico si la opcion de mostrar titulo fue seleccionada
@@ -474,19 +494,76 @@ $(document).ready(function(){
                         } else{
                             $("#p"+infoIdVideo).append("<span id='cajaVideo"+infoIdVideo+"'><iframe width='640' height='360' src='//www.youtube.com/embed/"+infoIdVideo+"' frameborder='0' allowfullscreen></iframe></span>");
                         }
-                        
-                        //console.log($("#cajaVideo"+infoIdVideo));
-
                     });
-    
-
                 }, function(responseVideos){
                     console.log(responseVideos);//funcion para mostar errores
-                });
-                
+            });
+        }
+
+        for(var i = 0, t = listaIdVideos.length; i<t; i++){
+                var idVideo = listaIdVideos[i].contentDetails.videoId;
+                //Inserto el id del video en el objeto de configuracion
+                objetoConfiguracionVideo.id = idVideo;
+                $(".infoListaVideos").append("<div class='video"+i+"'></div>");
+                estructuraHtmlVideo(i); //llamo a la funcion que hace la peticion y procesa la informacion
+        }           
     }
 
-    function formatoTiempo(tiempoOrigen){
+    var peticionCalculoVideo = function(){
+        
+        var objetoConfiguracionPlaylistItems = {
+            part: "contentDetails",
+            maxResults: "50",
+            fields: "items(contentDetails(videoId)),nextPageToken"
+        }
+        //Obtengo el id en caso de que sea de una url
+        var idUrlLista = $("#idUrlLista").val();
+        if(idUrlLista.lastIndexOf("=") === -1){
+            idLista = idUrlLista;
+        }
+        else{
+            idLista = idUrlLista.substring(idUrlLista.lastIndexOf("=")+1);
+        }
+
+        //Le asigno la id al objeto de configuracion
+        objetoConfiguracionPlaylistItems.playlistId = idLista;
+        objetoConfiguracionPlaylistItems.pageToken = varPageTokenCalculo;
+
+        var request = gapi.client.youtube.playlistItems.list(objetoConfiguracionPlaylistItems);
+        request.then(function(response){
+            
+            var listaIdVideos = response.result.items;
+            var objetoConfiguracionVideo = {
+                part: "contentDetails",
+                id: "",
+                fields: "items(contentDetails(duration))"
+            }
+
+            for(i = 0, t = listaIdVideos.length; i<t; i++){
+                var idVideo = listaIdVideos[i].contentDetails.videoId;
+                objetoConfiguracionVideo.id = idVideo;
+                
+                var requestVideo = gapi.client.youtube.videos.list(objetoConfiguracionVideo);
+                requestVideo.then(function(response){
+                    var duracion = response.result.items[0].contentDetails.duration;
+                    formatoTiempo(duracion, true);
+
+                }, function(response){
+                    console.log(response);
+                });
+            }
+
+            if(response.result.nextPageToken){
+                varPageTokenCalculo = response.result.nextPageToken;
+                peticionCalculoVideo();
+            }else{
+                $(".duracion").css("display", "inline");
+            } 
+        });
+
+    }
+
+    function formatoTiempo(tiempoOrigen, calcular){
         var h = "00";
         var m = "00";
         var s = "00";
@@ -506,8 +583,10 @@ $(document).ready(function(){
         var tiempo = h+":"+m+":"+s;
         var valorHora = parseInt(h);
         var valorMinutos = parseInt(m);
-        var valorSegundos = parseInt(s);    
-        calculoTotal(valorHora, valorMinutos, valorSegundos);
+        var valorSegundos = parseInt(s);
+        if(calcular){
+            calculoTotal(valorHora, valorMinutos, valorSegundos);    
+        }    
         return tiempo;
     }
 
@@ -537,6 +616,9 @@ $(document).ready(function(){
 
     //Accion para mostrar la informacion de la lista de reproduccion
     $(".dame").click(function(){
+        control = true;
+        varPageTokenCalculo = "";
+        objetoConfiguracionPlaylistItems.pageToken = "";
         //Aqui se arma el campo fields para el objeto de configuracion channels
         objetoConfiguracionChannels.fields = channels();
 
@@ -556,5 +638,6 @@ $(document).ready(function(){
 
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
+        gapi.client.load("youtube", "v3").then(peticionCalculoVideo);
     });      
 });

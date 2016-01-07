@@ -213,3 +213,19 @@ h3{
 .linkVideo iframe{
 	display: block;
 }
+
+.botonsiguiente, .botonanterior{
+	color: #777;
+	font-size: 29px;
+	font-family: 'Wire One', sans-serif;	
+	padding: 5px;
+}
+
+.botonsiguiente:hover, .botonanterior:hover{
+	color: blue;
+	cursor: pointer;
+}
+
+.duracion{
+	/*display: none;*/
+}
