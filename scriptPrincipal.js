@@ -113,10 +113,10 @@ $(document).ready(function(){
     }
 
     var //variables de snippet para video
-        publishedAt = "thumbnails(medium)",
+        publishedAt = "",
         title = "title",
         description = "",
-        thumbnails = "";
+        thumbnails = "thumbnails(medium)";
 
     //Funcion para formar la parte de snippet
     var videoSnippet = function(){
@@ -614,8 +614,7 @@ $(document).ready(function(){
 
     }
 
-    //Accion para mostrar la informacion de la lista de reproduccion
-    $(".dame").click(function(){
+    var funcionInicial = function(){
         control = true;
         varPageTokenCalculo = "";
         objetoConfiguracionPlaylistItems.pageToken = "";
@@ -630,6 +629,7 @@ $(document).ready(function(){
         $("form h2:first").addClass("titulo");
         $(".dame").addClass("dame-result");
         $(".config").addClass("config-result");
+        console.log($("#infoLista").parent().addClass("cajaInfo"));
 
         //Borrar la informacion cada vez que se muestra un resultado nuevo
         $(".infoLista").empty();
@@ -639,5 +639,18 @@ $(document).ready(function(){
         gapi.client.setApiKey("AIzaSyARaWBizwChYj0ROHcQHaj23de5d2wj9NQ");
         gapi.client.load("youtube", "v3").then(peticion);
         gapi.client.load("youtube", "v3").then(peticionCalculoVideo);
-    });      
+    };
+
+    //Accion para mostrar la informacion de la lista de reproduccion
+    $(".dame").click(function(){
+        funcionInicial();
+    });
+
+    $(document).keypress(function(e){
+        if(e.target.id === "idUrlLista" && e.keyCode === 13){
+            funcionInicial();
+        }
+    });    
+
+
 });
