@@ -235,7 +235,7 @@ h3{
 }
 
 h2{
-	padding: 0px;
+	padding: 50px 0px 0px 0px;
 	margin: 0px;
 }
 
@@ -246,4 +246,8 @@ h2{
 .infoLista, .infoListaVideos{
 	width: 900px;
 	margin: auto;
+}
+
+.resultadoBuscador{
+	margin-top: 10px
 }
