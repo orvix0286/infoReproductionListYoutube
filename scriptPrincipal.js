@@ -321,7 +321,13 @@ $(document).ready(function(){
        var totalSegundos = 0;
         
         //Obtengo el id en caso de que sea de una url
-        var idUrlLista = $("#idUrlLista").val();
+        if(sessionStorage.enlaceOrigen){
+            var idUrlLista = sessionStorage.enlaceOrigen;    
+        }
+        else{
+            var idUrlLista = $("#idUrlLista").val();    
+        }
+        
         if(idUrlLista.lastIndexOf("=") === -1){
             idLista = idUrlLista;
         }
@@ -650,7 +656,13 @@ $(document).ready(function(){
         if(e.target.id === "idUrlLista" && e.keyCode === 13){
             funcionInicial();
         }
-    });    
+    });
+
+    if(sessionStorage.enlaceOrigen){
+        alert(sessionStorage.enlaceOrigen);
+        funcionInicial();
+        sessionStorage.enlaceOrigen = "";
+    }    
 
 
 });

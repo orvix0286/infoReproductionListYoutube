@@ -13,7 +13,19 @@ $(document).ready(function(){
 
         var request = gapi.client.youtube.search.list(objetoConfiguracion);
             request.then(function(response){
-                
+                var listaResultados = response.result.items;
+
+                for(var i=0, t=listaResultados.length; i<t; i++){
+                    var titulo = listaResultados[i].snippet.title;
+                    var idListaReproduccion = listaResultados[i].id.playlistId;
+                    sessionStorage["video"+i] = idListaReproduccion;
+                    var cadenaTexto = "<div class='resultado"+i+"' data='"+idListaReproduccion+"'>"+titulo+"</div>";
+                    $(".resultado").append(cadenaTexto);
+                    $(".resultado"+i).click(function(){
+                        sessionStorage.enlaceOrigen = $(this).attr("data");
+                        window.open("index.html","_self");
+                    });
+                }
         });
 
     };
